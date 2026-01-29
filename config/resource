@@ -1,0 +1,31 @@
+{
+    "runtime": {
+        "requires": ["nodejs_v22"]
+    },
+    "data-share":
+    {
+        "shares":
+        [
+            {
+                "name": "One.Wol",
+                "permission":
+                {
+                    "rw":
+                    [
+                        "One.Wol"
+                    ]
+                }
+            },
+            {
+                "name": "One.Wol/data",
+                "permission":
+                {
+                    "rw":
+                    [
+                        "One.Wol"
+                    ]
+                }
+            }
+        ]
+    }
+}

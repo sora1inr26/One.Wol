@@ -1,0 +1,50 @@
+#!/bin/bash
+
+### uninstall_callback - called after the user uninstalls the application.
+### Responsibilities:
+###  - remove application data and var directories
+###  - write actions to uninstall log
+
+LOG_FILE="${TRIM_PKGVAR:-/tmp}/One.Wol-uninstall.log"
+
+log_msg() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "${LOG_FILE}"
+}
+
+safe_rm_dir() {
+    local target="$1"
+    local label="$2"
+
+    if [ -z "${target}" ]; then
+        log_msg "skip empty path for ${label}"
+        return 0
+    fi
+
+    case "${target}" in
+        "/"|"."|"..")
+            log_msg "skip unsafe path '${target}' for ${label}"
+            return 0
+            ;;
+    esac
+
+    if [ -d "${target}" ]; then
+        rm -rf "${target}" >> "${LOG_FILE}" 2>&1 || log_msg "failed to remove ${target}"
+        log_msg "removed ${label}: ${target}"
+    else
+        log_msg "${label} not found: ${target}"
+    fi
+}
+
+log_msg "uninstall_callback start"
+
+DATA_ACTION="${wizard_data_action:-${WIZARD_DATA_ACTION:-${TRIM_WIZARD_DATA_ACTION:-}}}"
+if [ "${DATA_ACTION}" = "delete" ]; then
+    log_msg "wizard_data_action=delete, removing data and var"
+    safe_rm_dir "${TRIM_PKGDATA}" "data dir"
+    safe_rm_dir "${TRIM_PKGVAR}" "var dir"
+else
+    log_msg "wizard_data_action=${DATA_ACTION:-keep}, keeping data and var"
+fi
+
+log_msg "uninstall_callback done"
+exit 0

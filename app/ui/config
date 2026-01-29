@@ -1,0 +1,13 @@
+{
+    ".url": {
+        "One.Wol.Application": {
+            "title": "One.Wol",
+            "icon": "images/icon_{0}.png",
+            "type": "iframe",
+            "protocol": "",
+            "port": "11345",
+            "url": "/",
+            "allUsers": false
+        }
+    }
+}

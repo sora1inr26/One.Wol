@@ -1,0 +1,56 @@
+#!/bin/bash
+
+### uninstall_init - called before the user uninstalls the application.
+### Responsibilities:
+###  - stop the running service (if any)
+###  - remove pid file
+###  - write actions to uninstall log
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+LOG_FILE="${TRIM_PKGVAR:-/tmp}/One.Wol-uninstall.log"
+
+log_msg() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "${LOG_FILE}"
+}
+
+safe_kill_pid() {
+    local pid="$1"
+    if [ -z "${pid}" ]; then
+        return 0
+    fi
+    if kill -0 "${pid}" 2>/dev/null; then
+        log_msg "send TERM signal to PID:${pid}"
+        kill -TERM "${pid}" >> "${LOG_FILE}" 2>&1 || true
+        local count=0
+        while kill -0 "${pid}" 2>/dev/null && [ $count -lt 10 ]; do
+            sleep 1
+            count=$((count + 1))
+            log_msg "waiting process terminate... (${count}s/10s)"
+        done
+        if kill -0 "${pid}" 2>/dev/null; then
+            log_msg "send KILL signal to PID:${pid}"
+            kill -KILL "${pid}" >> "${LOG_FILE}" 2>&1 || true
+        fi
+    else
+        log_msg "no process with PID:${pid}"
+    fi
+}
+
+log_msg "uninstall_init start"
+
+# If bundled 'main' control script exists and is executable, use it to stop the service.
+if [ -x "${SCRIPT_DIR}/main" ]; then
+    log_msg "stopping service via ${SCRIPT_DIR}/main"
+    "${SCRIPT_DIR}/main" stop >> "${LOG_FILE}" 2>&1 || log_msg "main stop returned non-zero"
+fi
+
+# If a pidfile exists in TRIM_PKGVAR, try to stop the process and remove the pidfile.
+if [ -n "${TRIM_PKGVAR}" ] && [ -f "${TRIM_PKGVAR}/app.pid" ]; then
+    pid=$(head -n 1 "${TRIM_PKGVAR}/app.pid" | tr -d '[:space:]')
+    log_msg "found pidfile, pid=${pid}"
+    safe_kill_pid "${pid}"
+    rm -f "${TRIM_PKGVAR}/app.pid" >> "${LOG_FILE}" 2>&1 || log_msg "failed to remove pidfile"
+fi
+
+log_msg "uninstall_init done"
+exit 0

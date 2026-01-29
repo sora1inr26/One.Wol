@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>One.Wol</title>
+  <style>
+    :root{--bg:#f6f8fb;--card:#ffffff;--muted:#6b7280;--primary:#2563eb;--accent:#0ea5a4}
+    *{box-sizing:border-box}
+    body{font-family:Inter,Segoe UI,Arial,Helvetica,sans-serif;margin:0;background:var(--bg);color:#111;-webkit-font-smoothing:antialiased;min-height:100vh;padding:4vh 0}
+    .container{max-width:980px;margin:0;padding:12px}
+    /* 卡片自动拉伸高度（占视口高度减上下间距），超出时内部滚动 */
+    .card{background:var(--card);border-radius:12px;box-shadow:0 8px 24px rgba(16,24,40,0.06);padding:16px;width:75vw;max-width:1080px;margin:0 auto;height:calc(100vh - 8vh);overflow:auto}
+    h2{margin:0 0 8px 0;font-size:20px}
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+    input[type=text]{padding:12px;border:1px solid #e6e9ef;border-radius:10px;min-width:160px;font-size:15px}
+    .controls{display:flex;gap:12px;align-items:center}
+    .controls > button{margin-left:8px}
+    .actions{display:flex;gap:12px;align-items:center}
+    .actions > button{margin-left:8px}
+    button{background:var(--primary);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:15px}
+    button.secondary{background:#f3f6ff;color:var(--primary);border:1px solid rgba(37,99,235,0.08)}
+    button.danger{background:#ef4444}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{padding:12px 10px;text-align:left;border-bottom:1px solid #f0f2f7;font-size:15px}
+    tr:hover td{background:#fbfdff}
+    .muted{color:var(--muted);font-size:13px}
+    #msg{padding:8px 12px;border-radius:8px;margin-left:8px;min-width:160px}
+    .msg-success{background:rgba(14,165,164,0.12);color:var(--accent);}
+    .msg-error{background:rgba(239,68,68,0.08);color:#c02616}
+    .input-row{display:flex;gap:8px;align-items:center}
+
+    /* Mobile adjustments: larger touch targets, stacked layout */
+    @media (max-width:640px){
+      body{font-size:16px;padding:2vh 0}
+      .container{margin:12px;padding:8px}
+      .card{padding:12px;width:auto;margin:12px;height:auto;max-height:none}
+      .input-row{flex-direction:column;align-items:stretch}
+      .controls{width:100%}
+      .controls button{width:100%;display:block}
+      table{border:0}
+      table thead{display:none}
+      table tbody{display:block}
+      table tbody tr{display:block;margin-bottom:10px;background:linear-gradient(180deg,#fff,#fff);padding:10px;border-radius:10px;box-shadow:0 2px 6px rgba(16,24,40,0.03)}
+      table tbody td{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:0}
+      table tbody td.actions{padding-top:8px}
+      .actions{display:flex;gap:12px;align-items:center}
+      .actions button{flex:1;padding:14px 16px;border-radius:10px;font-size:17px;margin:0;min-width:78px}
+      .actions button + button{margin-left:10px}
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="toolbar">
+      <div style="flex:1">
+        <h2>One.Wol - Wake On Lan 工具</h2>
+        <div class="muted">添加并管理局域网中设备的 MAC 地址，发送 Wake-on-LAN 魔术包唤醒设备。</div>
+        <div id="network-info" class="muted" style="margin-top:6px">网络: 检索中...</div>
+      </div>
+    </div>
+    <div class="input-row" style="margin-bottom:12px">
+      <input id="mac" type="text" placeholder="MAC (AA:BB:CC:DD:EE:FF)" />
+      <input id="name" type="text" placeholder="名称(可选)" />
+      <div class="controls">
+        <button id="add">添加</button>
+      </div>
+      <div id="msg" aria-live="polite"></div>
+    </div>
+  <div>
+    <h3>已保存的设备</h3>
+    <table id="list"><thead><tr><th>MAC</th><th>名称</th><th>操作</th></tr></thead><tbody></tbody></table>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
