@@ -1,0 +1,17 @@
+#!/bin/bash
+
+### This script is called after the user installs the application.
+# If Node.js dependencies exist, try to install them using the provided node runtime.
+
+if [ -n "$TRIM_APPDEST" ] && [ -f "$TRIM_APPDEST/package.json" ]; then
+	# ensure node runtime is in PATH
+	export PATH=/var/apps/nodejs_v22/target/bin:$PATH
+	# log to TRIM_TEMP_LOGFILE if available
+	LOGFILE=${TRIM_TEMP_LOGFILE:-/tmp/One.Wol_install.log}
+	cd "$TRIM_APPDEST"
+	if command -v npm >/dev/null 2>&1; then
+		npm ci --production >> "$LOGFILE" 2>&1 || npm install --production >> "$LOGFILE" 2>&1
+	fi
+fi
+
+exit 0

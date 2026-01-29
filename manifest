@@ -1,0 +1,13 @@
+appname               = One.Wol
+version               = 1.0.0
+display_name          = One.Wol
+desc                  = 简易的 Wol (Wake On Lan)工具，基于FNOS实现，可以远程唤醒飞牛NAS所在局域网内的设备。
+arch                  = x86
+source                = thirdparty
+maintainer            = scott
+maintainer_url        = https://github.com/sora1inr26
+distributor           = scott
+distributor_url       = https://github.com/sora1inr26
+desktop_uidir         = ui
+desktop_applaunchname = One.Wol.Application
+install_dep_apps      = nodejs_v22
